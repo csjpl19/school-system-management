@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: school-system-web
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: DB_HOST
+        fromDatabase:
+          name: school-system-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: school-system-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: school-system-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: school-system-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: school-system-db
+          property: password
+
+databases:
+  - name: school-system-db
+    databaseName: school_system
+    user: school_system_user
+    plan: free
