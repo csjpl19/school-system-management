@@ -901,11 +901,25 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="studentAnnee">Année d'Étude</label>
-                                                <input type="text" id="studentAnnee" name="annee" required>
+                                                <select id="studentAnnee" name="annee" required>
+                                                    <option value="">Sélectionner une année</option>
+                                                    <option value="L1">L1</option>
+                                                    <option value="L2">L2</option>
+                                                    <option value="L3">L3</option>
+                                                    <option value="L4">L4</option>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="option_student">Option Choisie</label>
-                                                <input type="text" id="optionStudent" name="optionStudent" required>
+                                                <select id="optionStudent" name="optionStudent" required>
+                                                    <option value="">Sélectionner une option</option>
+                                                    <option value="Informatique">Informatique</option>
+                                                    <option value="Genie Civil">Genie Civil</option>
+                                                    <option value="Electronique">Electronique</option>
+                                                    <option value="Gestion">Gestion</option>
+                                                    <option value="Economie">Economie</option>
+                                                    <option value="Administration">Administration</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Ajouter
@@ -1116,7 +1130,7 @@
                                             <div style="margin-bottom: 20px;">
                                                 <p><strong>Nom:</strong> ${selectedStudent.fullName}</p>
                                                 <p><strong>Code étudiant:</strong> ${selectedStudent.studentCode} -
-                                                    ${selectedStudent.optionStudent}</p>
+                                                    ${selectedStudent.optionStudent} - ${selectedStudent.annee}</p>
                                                 <p><strong>Moyenne générale des 2 Semestres:</strong>
                                                     <c:choose>
                                                         <c:when test="${adminAverage != null}">
@@ -1476,7 +1490,7 @@
 
                                 <div style="margin-bottom: 20px;">
                                     <p><strong>Nom:</strong> ${user.fullName}</p>
-                                    <p><strong>Code étudiant:</strong> ${user.studentCode} - ${user.optionStudent}</p>
+                                    <p><strong>Code étudiant:</strong> ${user.studentCode} - ${user.optionStudent} - ${user.annee}</p>
                                     <p><strong>Moyenne générale des 2 Semestres:</strong>
                                         <c:choose>
                                             <c:when test="${average != null}">
