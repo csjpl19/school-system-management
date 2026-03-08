@@ -14,6 +14,16 @@ import java.util.Optional;
 @Service
 public class GradeService {
 
+    public enum TeacherGradeCreateResult {
+        CREATED,
+        STUDENT_NOT_FOUND,
+        SUBJECT_NOT_FOUND,
+        TEACHER_NOT_FOUND,
+        SUBJECT_NOT_ASSIGNED_TO_TEACHER,
+        STUDENT_NOT_IN_SUBJECT_ASSIGNMENT,
+        INVALID_GRADE
+    }
+
     public enum AdminGradeUpdateResult {
         UPDATED,
         GRADE_NOT_FOUND,
@@ -35,25 +45,56 @@ public class GradeService {
     private TeacherRepository teacherRepository;
 
     @Transactional
-    public Grade addGrade(GradeDTO gradeDTO, Long teacherId) {
-        Optional<Student> student = studentRepository.findById(gradeDTO.getStudentId());
-        Optional<Subject> subject = subjectRepository.findById(gradeDTO.getSubjectId());
-        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
-
-        if (student.isPresent() && subject.isPresent() && teacher.isPresent()) {
-            Grade grade = new Grade();
-            grade.setStudent(student.get());
-            grade.setSubject(subject.get());
-            grade.setTeacher(teacher.get());
-            grade.setGrade(gradeDTO.getGrade());
-            grade.setSemester(gradeDTO.getSemester());
-            grade.setAcademicYear(gradeDTO.getAcademicYear());
-            grade.setCreatedAt(LocalDateTime.now());
-            grade.setUpdatedAt(LocalDateTime.now());
-
-            return gradeRepository.save(grade);
+    public TeacherGradeCreateResult addGrade(GradeDTO gradeDTO, Long teacherId) {
+        if (gradeDTO.getGrade() == null
+                || gradeDTO.getGrade().compareTo(BigDecimal.ZERO) < 0
+                || gradeDTO.getGrade().compareTo(new BigDecimal("100")) > 0) {
+            return TeacherGradeCreateResult.INVALID_GRADE;
         }
-        return null;
+
+        Optional<Student> student = studentRepository.findById(gradeDTO.getStudentId());
+        if (student.isEmpty()) {
+            return TeacherGradeCreateResult.STUDENT_NOT_FOUND;
+        }
+
+        Optional<Subject> subject = subjectRepository.findById(gradeDTO.getSubjectId());
+        if (subject.isEmpty()) {
+            return TeacherGradeCreateResult.SUBJECT_NOT_FOUND;
+        }
+
+        Optional<Teacher> teacher = teacherRepository.findById(teacherId);
+        if (teacher.isEmpty()) {
+            return TeacherGradeCreateResult.TEACHER_NOT_FOUND;
+        }
+
+        Subject assignedSubject = subject.get();
+        Student selectedStudent = student.get();
+        Teacher currentTeacher = teacher.get();
+
+        if (assignedSubject.getTeacher() == null || !assignedSubject.getTeacher().getId().equals(currentTeacher.getId())) {
+            return TeacherGradeCreateResult.SUBJECT_NOT_ASSIGNED_TO_TEACHER;
+        }
+
+        boolean sameOption = assignedSubject.getOptionName() != null
+                && assignedSubject.getOptionName().equalsIgnoreCase(selectedStudent.getOptionStudent());
+        boolean sameYear = assignedSubject.getStudyYear() != null
+                && assignedSubject.getStudyYear().equalsIgnoreCase(selectedStudent.getAnnee());
+
+        if (!sameOption || !sameYear) {
+            return TeacherGradeCreateResult.STUDENT_NOT_IN_SUBJECT_ASSIGNMENT;
+        }
+
+        Grade grade = new Grade();
+        grade.setStudent(selectedStudent);
+        grade.setSubject(assignedSubject);
+        grade.setTeacher(currentTeacher);
+        grade.setGrade(gradeDTO.getGrade());
+        grade.setSemester(gradeDTO.getSemester());
+        grade.setAcademicYear(gradeDTO.getAcademicYear());
+        grade.setCreatedAt(LocalDateTime.now());
+        grade.setUpdatedAt(LocalDateTime.now());
+        gradeRepository.save(grade);
+        return TeacherGradeCreateResult.CREATED;
     }
 
     @Transactional

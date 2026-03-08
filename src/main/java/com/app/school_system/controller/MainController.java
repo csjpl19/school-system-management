@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class MainController {
+    private record TeacherAssignment(String optionName, String studyYear) {
+    }
 
     @Autowired
     private AuthService authService;
@@ -65,7 +71,11 @@ public class MainController {
 
     // Dashboard principal
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    public String dashboard(@RequestParam(required = false) String optionFilter,
+            @RequestParam(required = false) String yearFilter,
+            @RequestParam(required = false) String activeTab,
+            HttpSession session,
+            Model model) {
         if (session.getAttribute("user") == null) {
             return "redirect:/";
         }
@@ -75,6 +85,9 @@ public class MainController {
 
         model.addAttribute("user", user);
         model.addAttribute("userType", userType);
+        if (hasText(activeTab)) {
+            model.addAttribute("activeTab", activeTab.trim());
+        }
 
         // Data par user type
         switch (userType) {
@@ -82,7 +95,7 @@ public class MainController {
                 loadAdminData(model);
                 break;
             case "TEACHER":
-                loadTeacherData((Teacher) user, model);
+                loadTeacherData((Teacher) user, optionFilter, yearFilter, model);
                 break;
             case "STUDENT":
                 loadStudentData((Student) user, model);
@@ -106,14 +119,56 @@ public class MainController {
         model.addAttribute("gradeDTO", new GradeDTO());
     }
 
-    private void loadTeacherData(Teacher teacher, Model model) {
-        List<Subject> subjects = subjectRepository.findByTeacherId(teacher.getId());
-        List<Student> students = studentRepository.findStudentsByTeacherId(teacher.getId());
-        List<Student> studentsAll = studentRepository.findAll();
+    private void loadTeacherData(Teacher teacher, String optionFilter, String yearFilter, Model model) {
+        List<Subject> allSubjects = subjectRepository.findByTeacherId(teacher.getId());
+        List<Student> studentsLinkedToTeacher = studentRepository.findStudentsByTeacherId(teacher.getId());
 
-        model.addAttribute("subjects", subjects);
-        model.addAttribute("students", students);
-        model.addAttribute("studentsAll", studentsAll);
+        List<TeacherAssignment> assignments = allSubjects.stream()
+                .filter(subject -> hasText(subject.getOptionName()) && hasText(subject.getStudyYear()))
+                .map(subject -> new TeacherAssignment(subject.getOptionName().trim(), subject.getStudyYear().trim()))
+                .distinct()
+                .sorted(Comparator.comparing(TeacherAssignment::optionName)
+                        .thenComparing(TeacherAssignment::studyYear))
+                .toList();
+
+        TeacherAssignment selectedAssignment = null;
+        if (!assignments.isEmpty()) {
+            selectedAssignment = assignments.stream()
+                    .filter(assignment -> assignment.optionName().equalsIgnoreCase(normalize(optionFilter))
+                            && assignment.studyYear().equalsIgnoreCase(normalize(yearFilter)))
+                    .findFirst()
+                    .orElse(assignments.get(0));
+        }
+
+        List<Subject> filteredSubjects = new ArrayList<>();
+        List<Student> filteredStudents = new ArrayList<>();
+        if (selectedAssignment != null) {
+            String selectedOption = selectedAssignment.optionName();
+            String selectedYear = selectedAssignment.studyYear();
+
+            filteredSubjects = allSubjects.stream()
+                    .filter(subject -> selectedOption.equalsIgnoreCase(subject.getOptionName())
+                            && selectedYear.equalsIgnoreCase(subject.getStudyYear()))
+                    .toList();
+            filteredStudents = studentRepository.findByOptionStudentAndAnneeOrderByFullNameAsc(selectedOption, selectedYear);
+        }
+
+        Set<String> options = new LinkedHashSet<>();
+        Set<String> years = new LinkedHashSet<>();
+        assignments.forEach(assignment -> {
+            options.add(assignment.optionName());
+            years.add(assignment.studyYear());
+        });
+
+        model.addAttribute("subjects", filteredSubjects);
+        model.addAttribute("students", filteredStudents);
+        model.addAttribute("teacherAssignments", assignments);
+        model.addAttribute("teacherOptions", new ArrayList<>(options));
+        model.addAttribute("teacherStudyYears", new ArrayList<>(years));
+        model.addAttribute("selectedOption", selectedAssignment != null ? selectedAssignment.optionName() : "");
+        model.addAttribute("selectedStudyYear", selectedAssignment != null ? selectedAssignment.studyYear() : "");
+        model.addAttribute("teacherSubjectCount", allSubjects.size());
+        model.addAttribute("teacherStudentCount", studentsLinkedToTeacher.size());
         model.addAttribute("gradeDTO", new GradeDTO());
     }
 
@@ -282,15 +337,55 @@ public class MainController {
     // Profs ajout note
     @PostMapping("/teacher/add-grade")
     public String addGrade(@ModelAttribute GradeDTO gradeDTO,
-            HttpSession session) {
+            @RequestParam(required = false) String optionFilter,
+            @RequestParam(required = false) String yearFilter,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
         if (session.getAttribute("userType") == null ||
                 !session.getAttribute("userType").equals("TEACHER")) {
             return "redirect:/";
         }
 
         Teacher teacher = (Teacher) session.getAttribute("user");
-        gradeService.addGrade(gradeDTO, teacher.getId());
+        GradeService.TeacherGradeCreateResult result = gradeService.addGrade(gradeDTO, teacher.getId());
 
+        switch (result) {
+            case CREATED:
+                redirectAttributes.addFlashAttribute("teacherGradeSuccess", "La note a été enregistrée avec succès.");
+                break;
+            case STUDENT_NOT_IN_SUBJECT_ASSIGNMENT:
+                redirectAttributes.addFlashAttribute("teacherGradeError",
+                        "Cet étudiant n'appartient pas à l'option/année de la matière sélectionnée.");
+                break;
+            case SUBJECT_NOT_ASSIGNED_TO_TEACHER:
+                redirectAttributes.addFlashAttribute("teacherGradeError",
+                        "Vous ne pouvez pas attribuer une note pour une matière non affectée à votre compte.");
+                break;
+            case INVALID_GRADE:
+                redirectAttributes.addFlashAttribute("teacherGradeError",
+                        "La note doit être comprise entre 0 et 100.");
+                break;
+            case STUDENT_NOT_FOUND:
+                redirectAttributes.addFlashAttribute("teacherGradeError", "Étudiant introuvable.");
+                break;
+            case SUBJECT_NOT_FOUND:
+                redirectAttributes.addFlashAttribute("teacherGradeError", "Matière introuvable.");
+                break;
+            case TEACHER_NOT_FOUND:
+                redirectAttributes.addFlashAttribute("teacherGradeError", "Compte professeur introuvable.");
+                break;
+            default:
+                redirectAttributes.addFlashAttribute("teacherGradeError", "Erreur inattendue.");
+                break;
+        }
+
+        redirectAttributes.addAttribute("activeTab", "grades-teacher");
+        if (hasText(optionFilter)) {
+            redirectAttributes.addAttribute("optionFilter", optionFilter.trim());
+        }
+        if (hasText(yearFilter)) {
+            redirectAttributes.addAttribute("yearFilter", yearFilter.trim());
+        }
         return "redirect:/dashboard";
     }
 
@@ -312,5 +407,13 @@ public class MainController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+    private static boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    private static String normalize(String value) {
+        return value == null ? "" : value.trim();
     }
 }

@@ -24,7 +24,9 @@ public class Student {
     private String annee;
     private String email;
     private String phone;
-    private String option_student;
+    
+    @Column(name = "option_student")
+    private String optionStudent;
 
     @Column(name = "registration_date")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -102,10 +104,10 @@ public class Student {
     }
 
     public String getOptionStudent() {
-        return option_student;
+        return optionStudent;
     }
 
-    public void setOptionStudent(String option_student) {
-        this.option_student = option_student;
+    public void setOptionStudent(String optionStudent) {
+        this.optionStudent = optionStudent;
     }
 }

@@ -779,11 +779,11 @@
 
                                 <c:if test="${userType == 'TEACHER'}">
                                     <div class="stat-card">
-                                        <div class="stat-number">${subjects.size()}</div>
+                                        <div class="stat-number">${teacherSubjectCount}</div>
                                         <div class="stat-label">Matières enseignées</div>
                                     </div>
                                     <div class="stat-card">
-                                        <div class="stat-number">${students.size()}</div>
+                                        <div class="stat-number">${teacherStudentCount}</div>
                                         <div class="stat-label">Étudiants</div>
                                     </div>
                                 </c:if>
@@ -968,7 +968,7 @@
 
                                 <!-- Formulaire d'ajout -->
                                 <div style="margin-bottom: 30px;">
-                                    <h3 style="margin-bottom: 15px; color: #4a5568;">Ajouter une matière</h3>
+                                    <h3 style="margin-bottom: 15px; color: #4a5568;">Créer une affectation de cours</h3>
                                     <form action="/admin/add-subject" method="post">
                                         <div
                                             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
@@ -978,16 +978,38 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="subjectTeacher">Professeur</label>
-                                                <select id="subjectTeacher" name="teacher.id">
+                                                <select id="subjectTeacher" name="teacher.id" required>
                                                     <option value="">Sélectionner un professeur</option>
                                                     <c:forEach var="teacher" items="${teachers}">
                                                         <option value="${teacher.id}">${teacher.fullName}</option>
                                                     </c:forEach>
                                                 </select>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="subjectOption">Option</label>
+                                                <select id="subjectOption" name="optionName" required>
+                                                    <option value="">Sélectionner une option</option>
+                                                    <option value="Informatique">Informatique</option>
+                                                    <option value="Genie Civil">Genie Civil</option>
+                                                    <option value="Electronique">Electronique</option>
+                                                    <option value="Gestion">Gestion</option>
+                                                    <option value="Economie">Economie</option>
+                                                    <option value="Administration">Administration</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subjectYear">Année d'étude</label>
+                                                <select id="subjectYear" name="studyYear" required>
+                                                    <option value="">Sélectionner une année</option>
+                                                    <option value="L1">L1</option>
+                                                    <option value="L2">L2</option>
+                                                    <option value="L3">L3</option>
+                                                    <option value="L4">L4</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Ajouter
-                                            la matière</button>
+                                            l'affectation</button>
                                     </form>
                                 </div>
 
@@ -999,6 +1021,8 @@
                                                 <th>Code matière</th>
                                                 <th>Nom</th>
                                                 <th>Professeur</th>
+                                                <th>Option</th>
+                                                <th>Année</th>
                                                 <th>Date de création</th>
                                             </tr>
                                         </thead>
@@ -1007,7 +1031,16 @@
                                                 <tr>
                                                     <td>${subject.subjectCode}</td>
                                                     <td>${subject.subjectName}</td>
-                                                    <td>${subject.teacher.fullName}</td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${subject.teacher != null}">
+                                                                ${subject.teacher.fullName}
+                                                            </c:when>
+                                                            <c:otherwise>-</c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td>${subject.optionName}</td>
+                                                    <td>${subject.studyYear}</td>
                                                     <td><c:out value="${subject.createdAt}" default="-" /></td>
                                                 </tr>
                                             </c:forEach>
@@ -1264,6 +1297,8 @@
                                                 <th>Code matière</th>
                                                 <th>Cours</th>
                                                 <th>Professeur</th>
+                                                <th>Option</th>
+                                                <th>Année</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1279,11 +1314,13 @@
                                                             <c:otherwise>-</c:otherwise>
                                                         </c:choose>
                                                     </td>
+                                                    <td>${subject.optionName}</td>
+                                                    <td>${subject.studyYear}</td>
                                                 </tr>
                                             </c:forEach>
                                             <c:if test="${empty subjects}">
                                                 <tr>
-                                                    <td colspan="3" style="text-align: center;">Aucun cours disponible.
+                                                    <td colspan="5" style="text-align: center;">Aucun cours disponible.
                                                     </td>
                                                 </tr>
                                             </c:if>
@@ -1300,133 +1337,190 @@
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Notes</h2>
 
-                                <!-- Formulaire d'ajout de note -->
-                                <div style="margin-bottom: 30px;">
-                                    <h3 style="margin-bottom: 15px; color: #4a5568;">Ajouter une note</h3>
-                                    <form action="/teacher/add-grade" method="post">
-                                        <div
-                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                                            <div class="form-group">
-                                                <label for="gradeStudent">Étudiant</label>
-                                                <select id="gradeStudent" name="studentId" required>
-                                                    <option value="">Sélectionner un étudiant</option>
-                                                    <c:forEach var="student" items="${studentsAll}">
-                                                        <option value="${student.id}">${student.fullName}</option>
-                                                    </c:forEach>
+                                <c:if test="${empty teacherAssignments}">
+                                    <div
+                                        style="margin-top: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c;">
+                                        Aucune affectation n'est définie pour votre compte. Contactez l'administrateur.
+                                    </div>
+                                </c:if>
 
-                                                    /*Logique 2
-                                                    /* <c:if test="${empty students}">
-                                                        <c:forEach var="student" items="${studentsAll}">
-                                                            <option value="${student.id}">${student.fullName}</option>
+                                <c:if test="${not empty teacherAssignments}">
+                                    <div style="margin-bottom: 24px;">
+                                        <h3 style="margin-bottom: 15px; color: #4a5568;">Filtrer par affectation</h3>
+                                        <form action="/dashboard" method="get">
+                                            <input type="hidden" name="activeTab" value="grades-teacher">
+                                            <div
+                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                                                <div class="form-group">
+                                                    <label for="gradeOptionFilter">Option</label>
+                                                    <select id="gradeOptionFilter" name="optionFilter" required>
+                                                        <option value="">Sélectionner une option</option>
+                                                        <c:forEach var="optionItem" items="${teacherOptions}">
+                                                            <option value="${optionItem}" ${optionItem eq selectedOption ? 'selected' : ''}>
+                                                                ${optionItem}
+                                                            </option>
                                                         </c:forEach>
-                                                    </c:if> */
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="gradeYearFilter">Année d'étude</label>
+                                                    <select id="gradeYearFilter" name="yearFilter" required>
+                                                        <option value="">Sélectionner une année</option>
+                                                        <c:forEach var="yearItem" items="${teacherStudyYears}">
+                                                            <option value="${yearItem}" ${yearItem eq selectedStudyYear ? 'selected' : ''}>
+                                                                ${yearItem}
+                                                            </option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Appliquer le filtre</button>
+                                        </form>
+                                    </div>
 
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="gradeSubject">Matière</label>
-                                                <select id="gradeSubject" name="subjectId" required>
-                                                    <option value="">Sélectionner une matière</option>
-                                                    <c:forEach var="subject" items="${subjects}">
-                                                        <option value="${subject.id}">${subject.subjectName}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="gradeValue">Note (0-100)</label>
-                                                <input type="number" id="gradeValue" name="grade" min="0" max="100"
-                                                    step="0.01" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="semester">Semestre</label>
-                                                <select id="semester" name="semester" required>
-                                                    <option value="Semestre 1">Semestre 1</option>
-                                                    <option value="Semestre 2">Semestre 2</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="academicYear">Année académique</label>
-                                                <input type="text" id="academicYear" name="academicYear"
-                                                    value="2025-2026" required>
-                                            </div>
+                                    <c:if test="${not empty teacherGradeError}">
+                                        <div
+                                            style="margin-top: 18px; margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c;">
+                                            ${teacherGradeError}
                                         </div>
-                                        <button type="submit" class="btn btn-primary"
-                                            style="margin-top: 15px;">Enregistrer la note</button>
-                                    </form>
-                                </div>
+                                    </c:if>
+                                    <c:if test="${not empty teacherGradeSuccess}">
+                                        <div
+                                            style="margin-top: 18px; margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4; color: #166534;">
+                                            ${teacherGradeSuccess}
+                                        </div>
+                                    </c:if>
+
+                                    <div style="margin-bottom: 30px;">
+                                        <h3 style="margin-bottom: 15px; color: #4a5568;">Ajouter une note</h3>
+                                        <p style="margin-bottom: 12px; color: #64748b;">
+                                            Affectation active: <strong>${selectedOption}</strong> - <strong>${selectedStudyYear}</strong>
+                                        </p>
+                                        <form action="/teacher/add-grade" method="post">
+                                            <input type="hidden" name="optionFilter" value="${selectedOption}">
+                                            <input type="hidden" name="yearFilter" value="${selectedStudyYear}">
+                                            <div
+                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                                <div class="form-group">
+                                                    <label for="gradeStudent">Étudiant</label>
+                                                    <select id="gradeStudent" name="studentId" required>
+                                                        <option value="">Sélectionner un étudiant</option>
+                                                        <c:forEach var="student" items="${students}">
+                                                            <option value="${student.id}">${student.fullName} (${student.studentCode})</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="gradeSubject">Matière</label>
+                                                    <select id="gradeSubject" name="subjectId" required>
+                                                        <option value="">Sélectionner une matière</option>
+                                                        <c:forEach var="subject" items="${subjects}">
+                                                            <option value="${subject.id}">${subject.subjectName}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="gradeValue">Note (0-100)</label>
+                                                    <input type="number" id="gradeValue" name="grade" min="0" max="100"
+                                                        step="0.01" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="semester">Semestre</label>
+                                                    <select id="semester" name="semester" required>
+                                                        <option value="Semestre 1">Semestre 1</option>
+                                                        <option value="Semestre 2">Semestre 2</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="academicYear">Année académique</label>
+                                                    <input type="text" id="academicYear" name="academicYear"
+                                                        value="2025-2026" required>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary"
+                                                style="margin-top: 15px;">Enregistrer la note</button>
+                                        </form>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
                     </c:if>
                     <c:if test="${userType == 'TEACHER'}">
-                        <div id="my-students" class="row">
-                            <div class="col-12">
-                                <div class="card my-4">
-                                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                            <h6 class="text-white text-capitalize ps-3">Mes Étudiants</h6>
-                                        </div>
+                        <div id="my-students" class="tab-content">
+                            <div class="content-section">
+                                <h2 class="section-title">Mes Étudiants</h2>
+
+                                <c:if test="${not empty teacherAssignments}">
+                                    <div style="margin-bottom: 20px;">
+                                        <form action="/dashboard" method="get">
+                                            <input type="hidden" name="activeTab" value="my-students">
+                                            <div
+                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                                                <div class="form-group">
+                                                    <label for="studentOptionFilter">Option</label>
+                                                    <select id="studentOptionFilter" name="optionFilter" required>
+                                                        <option value="">Sélectionner une option</option>
+                                                        <c:forEach var="optionItem" items="${teacherOptions}">
+                                                            <option value="${optionItem}" ${optionItem eq selectedOption ? 'selected' : ''}>
+                                                                ${optionItem}
+                                                            </option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="studentYearFilter">Année d'étude</label>
+                                                    <select id="studentYearFilter" name="yearFilter" required>
+                                                        <option value="">Sélectionner une année</option>
+                                                        <c:forEach var="yearItem" items="${teacherStudyYears}">
+                                                            <option value="${yearItem}" ${yearItem eq selectedStudyYear ? 'selected' : ''}>
+                                                                ${yearItem}
+                                                            </option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Afficher les étudiants</button>
+                                        </form>
                                     </div>
-                                    <div class="card-body px-0 pb-2">
-                                        <div class="table-responsive p-0">
-                                            <table class="table align-items-center mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Nom Complet</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                            Code Étudiant</th>
-                                                        <th
-                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Email</th>
-                                                        <th
-                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Téléphone</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <c:forEach var="student" items="${students}">
-                                                        <tr>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                    <div
-                                                                        class="d-flex flex-column justify-content-center">
-                                                                        <h6 class="mb-0 text-sm">
-                                                                            <c:out value="${student.fullName}" />
-                                                                        </h6>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <p class="text-xs font-weight-bold mb-0">
-                                                                    <c:out value="${student.studentCode}" />
-                                                                </p>
-                                                            </td>
-                                                            <td class="align-middle text-center text-sm">
-                                                                <span class="text-secondary text-xs font-weight-bold">
-                                                                    <c:out value="${student.email}" />
-                                                                </span>
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <span class="text-secondary text-xs font-weight-bold">
-                                                                    <c:out value="${student.phone}" />
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                    <c:if test="${empty students}">
-                                                        <tr>
-                                                            <td colspan="4" class="text-center p-3">
-                                                                <p class="text-sm font-weight-bold mb-0">Aucun étudiant
-                                                                    n'est actuellement inscrit à vos cours.</p>
-                                                            </td>
-                                                        </tr>
-                                                    </c:if>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                </c:if>
+
+                                <p style="margin-bottom: 14px; color: #64748b;">
+                                    Filtre actif: <strong>${selectedOption}</strong> - <strong>${selectedStudyYear}</strong>
+                                </p>
+
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Nom complet</th>
+                                                <th>Code étudiant</th>
+                                                <th>Option</th>
+                                                <th>Année</th>
+                                                <th>Email</th>
+                                                <th>Téléphone</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="student" items="${students}">
+                                                <tr>
+                                                    <td><c:out value="${student.fullName}" /></td>
+                                                    <td><c:out value="${student.studentCode}" /></td>
+                                                    <td><c:out value="${student.optionStudent}" /></td>
+                                                    <td><c:out value="${student.annee}" /></td>
+                                                    <td><c:out value="${student.email}" /></td>
+                                                    <td><c:out value="${student.phone}" /></td>
+                                                </tr>
+                                            </c:forEach>
+                                            <c:if test="${empty students}">
+                                                <tr>
+                                                    <td colspan="6" class="text-center p-3">
+                                                        <p class="text-sm font-weight-bold mb-0">Aucun étudiant trouvé pour cette
+                                                            affectation.</p>
+                                                    </td>
+                                                </tr>
+                                            </c:if>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

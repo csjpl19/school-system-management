@@ -15,6 +15,12 @@ public class Subject {
     
     @Column(name = "subject_name", nullable = false)
     private String subjectName;
+
+    @Column(name = "option_name", nullable = false)
+    private String optionName;
+
+    @Column(name = "study_year", nullable = false)
+    private String studyYear;
     
     @ManyToOne
     @JoinColumn(name = "teacher_id")
@@ -38,6 +44,12 @@ public class Subject {
     
     public String getSubjectName() { return subjectName; }
     public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+
+    public String getOptionName() { return optionName; }
+    public void setOptionName(String optionName) { this.optionName = optionName; }
+
+    public String getStudyYear() { return studyYear; }
+    public void setStudyYear(String studyYear) { this.studyYear = studyYear; }
     
     public Teacher getTeacher() { return teacher; }
     public void setTeacher(Teacher teacher) { this.teacher = teacher; }
