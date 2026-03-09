@@ -15,20 +15,22 @@
             <title>School System Management - Dashboard</title>
             <style>
                 :root {
-                    --primary: #0f766e;
-                    --primary-strong: #0c5f59;
-                    --secondary: #f97316;
-                    --success: #16a34a;
-                    --warning: #d97706;
-                    --danger: #dc2626;
+                    --primary: #0e7490;
+                    --primary-strong: #155e75;
+                    --secondary: #f59e0b;
+                    --accent: #0ea5e9;
+                    --success: #15803d;
+                    --warning: #b45309;
+                    --danger: #b91c1c;
                     --surface: #ffffff;
-                    --surface-soft: #f8fafc;
-                    --ink-900: #102a43;
-                    --ink-700: #2f4858;
-                    --ink-500: #627d98;
-                    --border: #d8e1e8;
-                    --shadow-soft: 0 18px 42px rgba(16, 42, 67, 0.12);
-                    --shadow-card: 0 10px 28px rgba(16, 42, 67, 0.1);
+                    --surface-soft: #f4f8fb;
+                    --ink-900: #0f172a;
+                    --ink-700: #1e293b;
+                    --ink-500: #64748b;
+                    --border: #d7e2ec;
+                    --ring: rgba(14, 116, 144, 0.18);
+                    --shadow-soft: 0 22px 48px rgba(15, 23, 42, 0.14);
+                    --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.1);
                     --radius-lg: 18px;
                     --radius-md: 12px;
                     --radius-sm: 9px;
@@ -46,9 +48,9 @@
                     min-height: 100vh;
                     line-height: 1.45;
                     background:
-                        radial-gradient(circle at 18% 14%, rgba(15, 118, 110, 0.12) 0%, transparent 44%),
-                        radial-gradient(circle at 82% 12%, rgba(249, 115, 22, 0.12) 0%, transparent 45%),
-                        linear-gradient(150deg, #f5f8fa 0%, #fdf5ea 48%, #edf4f3 100%);
+                        radial-gradient(circle at 18% 14%, rgba(14, 116, 144, 0.14) 0%, transparent 44%),
+                        radial-gradient(circle at 82% 12%, rgba(245, 158, 11, 0.14) 0%, transparent 45%),
+                        linear-gradient(150deg, #f3f8fb 0%, #fdf7ed 45%, #eef6ff 100%);
                 }
 
                 body::before,
@@ -66,7 +68,7 @@
                     height: 320px;
                     bottom: -120px;
                     left: -90px;
-                    background: rgba(15, 118, 110, 0.14);
+                    background: rgba(14, 116, 144, 0.16);
                 }
 
                 body::after {
@@ -74,7 +76,7 @@
                     height: 280px;
                     top: -100px;
                     right: -90px;
-                    background: rgba(249, 115, 22, 0.13);
+                    background: rgba(245, 158, 11, 0.14);
                 }
 
                 .dashboard {
@@ -84,13 +86,13 @@
 
                 .sidebar {
                     width: 270px;
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(248, 250, 252, 0.94));
-                    border-right: 1px solid rgba(216, 225, 232, 0.85);
+                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 251, 0.95));
+                    border-right: 1px solid rgba(215, 226, 236, 0.9);
                     position: fixed;
                     height: 100vh;
                     overflow-y: auto;
                     backdrop-filter: blur(6px);
-                    box-shadow: 8px 0 28px rgba(16, 42, 67, 0.08);
+                    box-shadow: 8px 0 28px rgba(15, 23, 42, 0.08);
                 }
 
                 .sidebar::-webkit-scrollbar {
@@ -98,7 +100,7 @@
                 }
 
                 .sidebar::-webkit-scrollbar-thumb {
-                    background: rgba(15, 118, 110, 0.25);
+                    background: rgba(14, 116, 144, 0.28);
                     border-radius: 999px;
                 }
 
@@ -111,14 +113,23 @@
                 .logo {
                     padding: 26px 20px 22px;
                     border-bottom: 1px solid var(--border);
+                    text-align: center;
                 }
 
                 .logo h1 {
                     font-family: 'Space Grotesk', sans-serif;
-                    font-size: 1.9rem;
-                    letter-spacing: 0.04em;
+                    font-size: 1.35rem;
+                    letter-spacing: 0.03em;
                     color: var(--ink-900);
                     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+                }
+
+                .logo p {
+                    margin-top: 4px;
+                    font-size: 0.74rem;
+                    color: var(--ink-500);
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
                 }
 
                 .user-info {
@@ -126,7 +137,8 @@
                     padding: 18px 14px;
                     border: 1px solid var(--border);
                     border-radius: var(--radius-md);
-                    background: linear-gradient(145deg, #ffffff, #f6fbfa);
+                    background: linear-gradient(145deg, #ffffff, #f4f8fb);
+                    text-align: center;
                 }
 
                 .user-avatar {
@@ -141,7 +153,7 @@
                     font-size: 1.25rem;
                     font-weight: 700;
                     margin-bottom: 12px;
-                    box-shadow: 0 8px 18px rgba(15, 118, 110, 0.3);
+                    box-shadow: 0 8px 18px rgba(14, 116, 144, 0.3);
                 }
 
                 .user-name {
@@ -175,17 +187,22 @@
                 }
 
                 .nav-item:hover {
-                    background: rgba(15, 118, 110, 0.1);
+                    background: rgba(14, 116, 144, 0.1);
                     color: var(--primary-strong);
-                    border-color: rgba(15, 118, 110, 0.2);
+                    border-color: rgba(14, 116, 144, 0.2);
                     transform: translateX(3px);
                 }
 
                 .nav-item.active {
-                    background: linear-gradient(135deg, var(--primary), #1a9d8e);
+                    background: linear-gradient(135deg, var(--primary), var(--accent));
                     color: white;
                     border-color: rgba(0, 0, 0, 0.02);
-                    box-shadow: 0 10px 22px rgba(15, 118, 110, 0.35);
+                    box-shadow: 0 10px 22px rgba(14, 116, 144, 0.35);
+                }
+
+                .nav-item:focus-visible {
+                    outline: none;
+                    box-shadow: 0 0 0 3px var(--ring);
                 }
 
                 .nav-icon {
@@ -217,7 +234,7 @@
 
                 .content-section {
                     background: rgba(255, 255, 255, 0.92);
-                    border: 1px solid rgba(216, 225, 232, 0.9);
+                    border: 1px solid rgba(215, 226, 236, 0.9);
                     border-radius: var(--radius-lg);
                     padding: 22px;
                     margin-bottom: 24px;
@@ -264,8 +281,8 @@
                 }
 
                 .stat-card {
-                    background: linear-gradient(165deg, #ffffff, #f5fbfa);
-                    border: 1px solid rgba(216, 225, 232, 0.9);
+                    background: linear-gradient(165deg, #ffffff, #f4f8fb);
+                    border: 1px solid rgba(215, 226, 236, 0.9);
                     padding: 22px 18px;
                     border-radius: var(--radius-md);
                     box-shadow: var(--shadow-card);
@@ -310,18 +327,24 @@
                     width: 100%;
                     padding: 10px 12px;
                     border: 1px solid var(--border);
-                    background: #fff;
+                    background: var(--surface-soft);
                     border-radius: var(--radius-sm);
                     font-size: 0.92rem;
                     color: var(--ink-700);
-                    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+                    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+                }
+
+                .form-group input:hover,
+                .form-group select:hover {
+                    background: #fff;
                 }
 
                 .form-group input:focus,
                 .form-group select:focus {
                     outline: none;
                     border-color: var(--primary);
-                    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+                    box-shadow: 0 0 0 3px var(--ring);
+                    background: #fff;
                 }
 
                 .btn {
@@ -336,14 +359,19 @@
                 }
 
                 .btn-primary {
-                    background: linear-gradient(135deg, var(--primary), #159d8f);
+                    background: linear-gradient(135deg, var(--primary), var(--accent));
                     color: white;
                 }
 
                 .btn-primary:hover {
                     filter: brightness(1.03);
                     transform: translateY(-1px);
-                    box-shadow: 0 10px 20px rgba(15, 118, 110, 0.28);
+                    box-shadow: 0 10px 20px rgba(14, 116, 144, 0.28);
+                }
+
+                .btn:focus-visible {
+                    outline: none;
+                    box-shadow: 0 0 0 3px var(--ring);
                 }
 
                 .btn-success {
@@ -371,7 +399,7 @@
                 }
 
                 th {
-                    background: linear-gradient(180deg, #f8fbfc, #f1f6f8);
+                    background: linear-gradient(180deg, #f7fbff, #eef4fb);
                     padding: 13px 12px;
                     text-align: left;
                     font-weight: 600;
@@ -390,7 +418,50 @@
                 }
 
                 tr:hover {
-                    background: #f2f8f7;
+                    background: #eef6fb;
+                }
+
+                .table-container input[type="text"],
+                .table-container input[type="email"],
+                .table-container input[type="date"],
+                .table-container input[type="number"],
+                .table-container input[type="password"],
+                .table-container select {
+                    width: 100%;
+                    min-width: 120px;
+                    padding: 8px 9px;
+                    border: 1px solid rgba(215, 226, 236, 0.95);
+                    border-radius: 8px;
+                    background: #f8fbff;
+                    color: var(--ink-700);
+                    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+                }
+
+                .table-container input:focus,
+                .table-container select:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 2px var(--ring);
+                    background: #fff;
+                }
+
+                .table-row-dirty {
+                    background: linear-gradient(90deg, rgba(14, 116, 144, 0.08), rgba(245, 158, 11, 0.08));
+                }
+
+                .table-row-dirty td:first-child {
+                    box-shadow: inset 4px 0 0 var(--secondary);
+                }
+
+                .btn.is-loading {
+                    opacity: 0.82;
+                    cursor: wait;
+                    pointer-events: none;
+                    transform: none;
+                }
+
+                .btn.is-loading::after {
+                    content: " ...";
                 }
 
                 .grade-badge {
@@ -468,8 +539,8 @@
                 }
 
                 .tab.active {
-                    border-color: rgba(15, 118, 110, 0.25);
-                    background: rgba(15, 118, 110, 0.11);
+                    border-color: rgba(14, 116, 144, 0.25);
+                    background: rgba(14, 116, 144, 0.11);
                     color: var(--primary-strong);
                     font-weight: 600;
                 }
@@ -486,11 +557,11 @@
                 .average-display {
                     text-align: center;
                     padding: 24px 20px;
-                    background: linear-gradient(140deg, var(--primary), #159d8f 58%, var(--secondary));
+                    background: linear-gradient(140deg, var(--primary), var(--accent) 58%, var(--secondary));
                     color: white;
                     border-radius: 14px;
                     margin: 20px 0;
-                    box-shadow: 0 15px 28px rgba(15, 118, 110, 0.3);
+                    box-shadow: 0 15px 28px rgba(14, 116, 144, 0.3);
                 }
 
                 .average-value {
@@ -628,6 +699,10 @@
                         letter-spacing: 0;
                     }
 
+                    .logo p {
+                        display: none;
+                    }
+
                     .user-info {
                         margin: 12px 10px 0;
                         padding: 14px 8px;
@@ -688,16 +763,17 @@
                 <!-- Sidebar -->
                 <div class="sidebar">
                     <div class="logo">
-                        <center><h1>🔹S S M🔹</h1></center>
+                        <h1>School System</h1>
+                        <p>Management Portal</p>
                     </div>
 
-                    <center><div class="user-info">
+                    <div class="user-info">
                         <div class="user-avatar">
                             ${user.fullName.charAt(0)}
                         </div>
                         <div class="user-name">${user.fullName}</div>
                         <div class="user-type">${userType}</div>
-                    </div></center>
+                    </div>
 
                     <div class="nav-menu">
                         <a href="#dashboard" class="nav-item active" data-tab="dashboard">
@@ -1799,15 +1875,46 @@
 
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
-                    // Gestion des onglets
                     const navItems = document.querySelectorAll('.nav-item');
                     const tabContents = document.querySelectorAll('.tab-content');
                     const activeTabFromServer = '<c:out value="${activeTab}" default="" />';
+                    const tabStorageKey = 'ssm-active-tab';
 
-                    function activateTab(tabId) {
-                        const tabElement = document.getElementById(tabId);
-                        const navElement = document.querySelector('[data-tab="' + tabId + '"]');
+                    function getStoredTab() {
+                        try {
+                            return sessionStorage.getItem(tabStorageKey) || '';
+                        } catch (error) {
+                            return '';
+                        }
+                    }
 
+                    function storeTab(tabId) {
+                        try {
+                            sessionStorage.setItem(tabStorageKey, tabId);
+                        } catch (error) {
+                            // Ignorer les restrictions de stockage navigateur.
+                        }
+                    }
+
+                    function animateCurrentTab(tabElement) {
+                        const sections = tabElement.querySelectorAll('.content-section');
+                        sections.forEach((section, index) => {
+                            section.style.animation = 'none';
+                            section.offsetHeight;
+                            section.style.animation = 'contentIn 0.35s ease ' + (index * 0.04) + 's both';
+                        });
+                    }
+
+                    function activateTab(tabId, options = {}) {
+                        const normalizedTab = (tabId || '').replace('#', '').trim();
+                        const shouldPersist = options.persist !== false;
+                        const shouldUpdateHash = options.updateHash === true;
+                        if (!normalizedTab) {
+                            return;
+                        }
+
+                        const tabElement = document.getElementById(normalizedTab);
+                        const navElement = document.querySelector('[data-tab="' + normalizedTab + '"]');
                         if (!tabElement || !navElement) {
                             return;
                         }
@@ -1817,39 +1924,143 @@
 
                         navElement.classList.add('active');
                         tabElement.classList.add('active');
+                        animateCurrentTab(tabElement);
+
+                        if (shouldPersist) {
+                            storeTab(normalizedTab);
+                        }
+                        if (shouldUpdateHash) {
+                            window.location.hash = normalizedTab;
+                        }
                     }
 
                     navItems.forEach(item => {
                         item.addEventListener('click', function (e) {
                             e.preventDefault();
-                            const tabId = this.getAttribute('data-tab');
-                            activateTab(tabId);
+                            activateTab(this.getAttribute('data-tab'), { updateHash: true });
                         });
                     });
 
-                    // Afficher la section depuis l'URL ou depuis le serveur
-                    const hash = window.location.hash;
-                    if (hash) {
-                        const tabId = hash.substring(1);
-                        activateTab(tabId);
-                    } else if (activeTabFromServer) {
-                        activateTab(activeTabFromServer);
+                    const hash = (window.location.hash || '').replace('#', '').trim();
+                    const fallbackTab = hash || activeTabFromServer || getStoredTab() || 'dashboard';
+                    activateTab(fallbackTab, { updateHash: false });
+
+                    function setButtonLoading(button, loadingText) {
+                        if (!button) {
+                            return;
+                        }
+                        button.classList.add('is-loading');
+                        button.disabled = true;
+                        button.textContent = loadingText;
                     }
 
-                    // Mettre à jour l'URL lors du changement d'onglet
-                    navItems.forEach(item => {
-                        item.addEventListener('click', function () {
-                            const tabId = this.getAttribute('data-tab');
-                            window.location.hash = tabId;
+                    const allForms = document.querySelectorAll('form');
+                    allForms.forEach(form => {
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (!submitBtn) {
+                            return;
+                        }
+                        const isInlineUpdateForm = form.id.startsWith('teacherUpdateForm') ||
+                            form.id.startsWith('studentUpdateForm');
+
+                        form.addEventListener('submit', function () {
+                            setButtonLoading(submitBtn, isInlineUpdateForm ? 'Enregistrement' : 'Traitement');
                         });
                     });
 
-                    // Génération de mot de passe pour les professeurs
+                    const editableForms = document.querySelectorAll('form[id^="teacherUpdateForm"], form[id^="studentUpdateForm"]');
+                    editableForms.forEach(form => {
+                        const row = form.closest('tr');
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const defaultBtnText = submitBtn ? submitBtn.textContent.trim() : 'Modifier';
+                        const linkedInputs = document.querySelectorAll('[form="' + form.id + '"]');
+                        const initialValues = new Map();
+
+                        linkedInputs.forEach(input => initialValues.set(input.name, input.value));
+
+                        function updateDirtyState() {
+                            let dirty = false;
+                            linkedInputs.forEach(input => {
+                                if (input.value !== initialValues.get(input.name)) {
+                                    dirty = true;
+                                }
+                            });
+
+                            if (row) {
+                                row.classList.toggle('table-row-dirty', dirty);
+                            }
+                            if (submitBtn && !submitBtn.classList.contains('is-loading')) {
+                                submitBtn.textContent = dirty ? 'Enregistrer' : defaultBtnText;
+                            }
+                        }
+
+                        linkedInputs.forEach(input => {
+                            input.addEventListener('input', updateDirtyState);
+                            input.addEventListener('change', updateDirtyState);
+                        });
+                        updateDirtyState();
+                    });
+
+                    function animateNumber(element) {
+                        if (!element || element.dataset.animated === 'true') {
+                            return;
+                        }
+
+                        const numericText = element.textContent.replace(/[^0-9.-]/g, '');
+                        const target = Number(numericText);
+                        if (!Number.isFinite(target)) {
+                            return;
+                        }
+
+                        const isInteger = Number.isInteger(target);
+                        const duration = 900;
+                        const startTime = performance.now();
+                        element.dataset.animated = 'true';
+
+                        function step(currentTime) {
+                            const progress = Math.min((currentTime - startTime) / duration, 1);
+                            const eased = 1 - Math.pow(1 - progress, 3);
+                            const value = target * eased;
+                            element.textContent = isInteger ? Math.round(value) : value.toFixed(2);
+                            if (progress < 1) {
+                                requestAnimationFrame(step);
+                            } else {
+                                element.textContent = isInteger ? String(Math.round(target)) : target.toFixed(2);
+                            }
+                        }
+
+                        requestAnimationFrame(step);
+                    }
+
+                    const statNumbers = document.querySelectorAll('.stat-number');
+                    if ('IntersectionObserver' in window) {
+                        const statObserver = new IntersectionObserver((entries, observer) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    animateNumber(entry.target);
+                                    observer.unobserve(entry.target);
+                                }
+                            });
+                        }, { threshold: 0.6 });
+
+                        statNumbers.forEach(stat => statObserver.observe(stat));
+                    } else {
+                        statNumbers.forEach(stat => animateNumber(stat));
+                    }
+
+                    const logoutBtn = document.querySelector('.logout-btn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', function (event) {
+                            if (!window.confirm('Voulez-vous vraiment vous déconnecter ?')) {
+                                event.preventDefault();
+                            }
+                        });
+                    }
+
                     const teacherPasswordInput = document.getElementById('teacherPassword');
                     if (teacherPasswordInput) {
                         teacherPasswordInput.addEventListener('focus', function () {
                             if (!this.value) {
-                                // Générer un mot de passe aléatoire
                                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
                                 let password = '';
                                 for (let i = 0; i < 8; i++) {

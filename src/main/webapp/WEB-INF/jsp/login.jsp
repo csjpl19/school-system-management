@@ -12,16 +12,19 @@
     <title>School System Management - Connexion</title>
     <style>
         :root {
-            --primary: #0f766e;
-            --primary-strong: #0c5f59;
-            --secondary: #f97316;
-            --danger: #dc2626;
+            --primary: #0e7490;
+            --primary-strong: #155e75;
+            --secondary: #f59e0b;
+            --accent: #0ea5e9;
+            --danger: #b91c1c;
             --surface: #ffffff;
-            --ink-900: #102a43;
-            --ink-700: #2f4858;
-            --ink-500: #627d98;
-            --border: #d8e1e8;
-            --shadow-soft: 0 18px 42px rgba(16, 42, 67, 0.12);
+            --surface-soft: #f4f8fb;
+            --ink-900: #0f172a;
+            --ink-700: #1e293b;
+            --ink-500: #64748b;
+            --border: #d7e2ec;
+            --ring: rgba(14, 116, 144, 0.18);
+            --shadow-soft: 0 22px 48px rgba(15, 23, 42, 0.14);
             --radius-lg: 18px;
             --radius-md: 12px;
             --radius-sm: 9px;
@@ -43,9 +46,9 @@
             padding: 24px 14px;
             line-height: 1.45;
             background:
-                radial-gradient(circle at 18% 14%, rgba(15, 118, 110, 0.14) 0%, transparent 44%),
-                radial-gradient(circle at 82% 12%, rgba(249, 115, 22, 0.13) 0%, transparent 45%),
-                linear-gradient(150deg, #f5f8fa 0%, #fdf5ea 48%, #edf4f3 100%);
+                radial-gradient(circle at 18% 14%, rgba(14, 116, 144, 0.15) 0%, transparent 44%),
+                radial-gradient(circle at 82% 12%, rgba(245, 158, 11, 0.14) 0%, transparent 45%),
+                linear-gradient(150deg, #f3f8fb 0%, #fdf7ed 45%, #eef6ff 100%);
         }
 
         body::before,
@@ -62,7 +65,8 @@
             height: 300px;
             bottom: -120px;
             left: -80px;
-            background: rgba(15, 118, 110, 0.14);
+            background: rgba(14, 116, 144, 0.16);
+            filter: blur(1px);
         }
 
         body::after {
@@ -70,19 +74,27 @@
             height: 280px;
             top: -100px;
             right: -90px;
-            background: rgba(249, 115, 22, 0.13);
+            background: rgba(245, 158, 11, 0.14);
+            filter: blur(1px);
         }
 
         .login-container {
             position: relative;
-            background: rgba(255, 255, 255, 0.92);
-            border: 1px solid rgba(216, 225, 232, 0.9);
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(215, 226, 236, 0.95);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-soft);
             width: min(600px, 100%);
             padding: 36px;
             overflow: hidden;
             animation: cardIn 0.45s ease;
+            backdrop-filter: blur(8px);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .login-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 26px 54px rgba(15, 23, 42, 0.16);
         }
 
         .login-container::before {
@@ -113,6 +125,18 @@
             font-size: 0.93rem;
         }
 
+        .role-hint {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(14, 116, 144, 0.18);
+            background: linear-gradient(135deg, rgba(14, 116, 144, 0.08), rgba(14, 165, 233, 0.08));
+            color: var(--primary-strong);
+            font-size: 0.84rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -131,17 +155,23 @@
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            background: #fff;
+            background: var(--surface-soft);
             font-size: 0.92rem;
             color: var(--ink-700);
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            background: #fff;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+            box-shadow: 0 0 0 3px var(--ring);
+            background: #fff;
         }
 
         .user-type {
@@ -152,7 +182,7 @@
             padding: 4px;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            background: #f8fbfc;
+            background: linear-gradient(165deg, #f7fbff, #f8fbfc);
         }
 
         .user-type label {
@@ -169,8 +199,8 @@
 
         .user-type label:hover {
             transform: translateY(-1px);
-            border-color: rgba(15, 118, 110, 0.2);
-            background: rgba(15, 118, 110, 0.08);
+            border-color: rgba(14, 116, 144, 0.2);
+            background: rgba(14, 116, 144, 0.08);
         }
 
         .user-type input[type="radio"] {
@@ -178,17 +208,16 @@
         }
 
         .user-type input[type="radio"]:checked+label {
-            background: linear-gradient(135deg, var(--primary), #1a9d8e);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border-color: rgba(0, 0, 0, 0.04);
-            box-shadow: 0 8px 16px rgba(15, 118, 110, 0.28);
+            box-shadow: 0 8px 16px rgba(14, 116, 144, 0.28);
         }
 
         .login-btn {
             width: 100%;
             margin-top: 4px;
             padding: 12px;
-            background: linear-gradient(135deg, var(--primary), #159d8f);
             color: white;
             border: none;
             border-radius: 10px;
@@ -198,12 +227,23 @@
             letter-spacing: 0.01em;
             cursor: pointer;
             transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            background-size: 140% 140%;
+            background-image: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--ring), 0 8px 20px rgba(14, 116, 144, 0.24);
         }
 
         .login-btn:hover {
             filter: brightness(1.03);
             transform: translateY(-1px);
-            box-shadow: 0 12px 20px rgba(15, 118, 110, 0.28);
+            box-shadow: 0 12px 20px rgba(14, 116, 144, 0.28);
         }
 
         .error-message {
@@ -219,7 +259,7 @@
 
         .admin-credentials {
             margin-top: 18px;
-            background: linear-gradient(145deg, #ffffff, #f6fbfa);
+            background: linear-gradient(145deg, #ffffff, #f3f8fd);
             border: 1px solid var(--border);
             padding: 12px 14px;
             border-radius: var(--radius-md);
@@ -228,20 +268,35 @@
             line-height: 1.5;
         }
 
-        #admin-fields,
-        #teacher-fields,
-        #student-fields {
+        .auth-panel {
             margin-bottom: 12px;
             padding: 16px 14px 6px;
             border-radius: var(--radius-md);
-            border: 1px solid rgba(216, 225, 232, 0.95);
-            background: linear-gradient(180deg, #ffffff, #f8fcfb);
+            border: 1px solid rgba(215, 226, 236, 0.95);
+            background: linear-gradient(180deg, #ffffff, #f7fbff);
+            transform-origin: top center;
+        }
+
+        .auth-panel.is-visible {
+            animation: panelIn 0.26s ease;
         }
 
         @keyframes cardIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes panelIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
             }
 
             to {
@@ -268,9 +323,7 @@
                 gap: 8px;
             }
 
-            #admin-fields,
-            #teacher-fields,
-            #student-fields {
+            .auth-panel {
                 padding: 14px 12px 4px;
             }
         }
@@ -299,8 +352,9 @@
                 <input type="radio" id="student" name="userType" value="STUDENT">
                 <label for="student">Étudiant</label>
             </div>
+            <div id="roleHint" class="role-hint">Connexion administrateur.</div>
 
-            <div id="admin-fields">
+            <div id="admin-fields" class="auth-panel">
                 <div class="form-group">
                     <label for="username">Nom d'utilisateur</label>
                     <input type="text" id="username" name="username" required>
@@ -311,7 +365,7 @@
                 </div>
             </div>
 
-            <div id="teacher-fields" style="display: none;">
+            <div id="teacher-fields" class="auth-panel" style="display: none;">
                 <div class="form-group">
                     <label for="teacherFullName">Nom complet</label>
                     <input type="text" id="teacherFullName" name="fullName">
@@ -322,7 +376,7 @@
                 </div>
             </div>
 
-            <div id="student-fields" style="display: none;">
+            <div id="student-fields" class="auth-panel" style="display: none;">
                 <div class="form-group">
                     <label for="studentFullName">Nom complet</label>
                     <input type="text" id="studentFullName" name="fullName">
@@ -346,7 +400,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const userTypeRadios = document.querySelectorAll('input[name="userType"]');
-            
+            const roleHint = document.getElementById('roleHint');
+
             const adminFields = document.getElementById('admin-fields');
             const teacherFields = document.getElementById('teacher-fields');
             const studentFields = document.getElementById('student-fields');
@@ -354,36 +409,62 @@
             const adminInputs = adminFields.querySelectorAll('input');
             const teacherInputs = teacherFields.querySelectorAll('input');
             const studentInputs = studentFields.querySelectorAll('input');
+            const roleDescriptions = {
+                ADMIN: 'Connexion administrateur.',
+                TEACHER: 'Accès professeur pour gérer les notes et affectations.',
+                STUDENT: 'Accès étudiant pour consulter les notes et le bulletin.'
+            };
+
+            function setPanelVisibility(panel, visible) {
+                panel.style.display = visible ? 'block' : 'none';
+                panel.classList.toggle('is-visible', visible);
+            }
 
             function updateFormFields() {
                 const selectedType = document.querySelector('input[name="userType"]:checked').value;
 
                 // Cacher tous les conteneurs de champs
-                adminFields.style.display = 'none';
-                teacherFields.style.display = 'none';
-                studentFields.style.display = 'none';
+                setPanelVisibility(adminFields, false);
+                setPanelVisibility(teacherFields, false);
+                setPanelVisibility(studentFields, false);
 
                 // Désactiver tous les champs pour qu'ils ne soient pas envoyés
                 adminInputs.forEach(input => {
                     input.disabled = true;
                     input.required = false;
                 });
-                teacherInputs.forEach(input => input.disabled = true);
-                studentInputs.forEach(input => input.disabled = true);
-                
+                teacherInputs.forEach(input => {
+                    input.disabled = true;
+                    input.required = false;
+                });
+                studentInputs.forEach(input => {
+                    input.disabled = true;
+                    input.required = false;
+                });
+
                 // Activer les champs pour le type d'utilisateur sélectionné
                 if (selectedType === 'ADMIN') {
-                    adminFields.style.display = 'block';
+                    setPanelVisibility(adminFields, true);
                     adminInputs.forEach(input => {
                         input.disabled = false;
-                        input.required = true; // Remettre 'required' pour l'admin
+                        input.required = true;
                     });
                 } else if (selectedType === 'TEACHER') {
-                    teacherFields.style.display = 'block';
-                    teacherInputs.forEach(input => input.disabled = false);
+                    setPanelVisibility(teacherFields, true);
+                    teacherInputs.forEach(input => {
+                        input.disabled = false;
+                        input.required = true;
+                    });
                 } else if (selectedType === 'STUDENT') {
-                    studentFields.style.display = 'block';
-                    studentInputs.forEach(input => input.disabled = false);
+                    setPanelVisibility(studentFields, true);
+                    studentInputs.forEach(input => {
+                        input.disabled = false;
+                        input.required = true;
+                    });
+                }
+
+                if (roleHint) {
+                    roleHint.textContent = roleDescriptions[selectedType] || '';
                 }
             }
 
