@@ -6,12 +6,14 @@ import com.app.school_system.model.*;
 import com.app.school_system.service.*;
 import com.app.school_system.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -240,6 +242,87 @@ public class MainController {
         return "redirect:/dashboard";
     }
 
+    @PostMapping("/admin/update-teacher/{id}")
+    public String updateTeacher(@PathVariable Long id,
+            @RequestParam String fullName,
+            @RequestParam String password,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("userType") == null ||
+                !session.getAttribute("userType").equals("ADMIN")) {
+            return "redirect:/";
+        }
+
+        Optional<Teacher> teacherOpt = teacherRepository.findById(id);
+        if (teacherOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("teacherUpdateError", "Professeur introuvable.");
+            return "redirect:/dashboard?activeTab=teachers";
+        }
+
+        String normalizedFullName = normalize(fullName);
+        String normalizedPassword = normalize(password);
+        if (normalizedFullName.isEmpty() || normalizedPassword.isEmpty()) {
+            redirectAttributes.addFlashAttribute("teacherUpdateError",
+                    "Le nom complet et le mot de passe sont obligatoires.");
+            return "redirect:/dashboard?activeTab=teachers";
+        }
+
+        Teacher teacher = teacherOpt.get();
+        teacher.setFullName(normalizedFullName);
+        teacher.setPassword(normalizedPassword);
+        teacher.setEmail(normalizeOptional(email));
+        teacher.setPhone(normalizeOptional(phone));
+        teacherRepository.save(teacher);
+
+        redirectAttributes.addFlashAttribute("teacherUpdateSuccess", "Informations du professeur mises à jour.");
+        return "redirect:/dashboard?activeTab=teachers";
+    }
+
+    @PostMapping("/admin/update-student/{id}")
+    public String updateStudent(@PathVariable Long id,
+            @RequestParam String fullName,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
+            @RequestParam String annee,
+            @RequestParam String optionStudent,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("userType") == null ||
+                !session.getAttribute("userType").equals("ADMIN")) {
+            return "redirect:/";
+        }
+
+        Optional<Student> studentOpt = studentRepository.findById(id);
+        if (studentOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("studentUpdateError", "Étudiant introuvable.");
+            return "redirect:/dashboard?activeTab=students";
+        }
+
+        String normalizedFullName = normalize(fullName);
+        String normalizedAnnee = normalize(annee);
+        String normalizedOption = normalize(optionStudent);
+        if (normalizedFullName.isEmpty() || normalizedAnnee.isEmpty() || normalizedOption.isEmpty() || dateOfBirth == null) {
+            redirectAttributes.addFlashAttribute("studentUpdateError",
+                    "Nom, date de naissance, année et option sont obligatoires.");
+            return "redirect:/dashboard?activeTab=students";
+        }
+
+        Student student = studentOpt.get();
+        student.setFullName(normalizedFullName);
+        student.setDateOfBirth(dateOfBirth);
+        student.setAnnee(normalizedAnnee);
+        student.setOptionStudent(normalizedOption);
+        student.setEmail(normalizeOptional(email));
+        student.setPhone(normalizeOptional(phone));
+        studentRepository.save(student);
+
+        redirectAttributes.addFlashAttribute("studentUpdateSuccess", "Informations de l'étudiant mises à jour.");
+        return "redirect:/dashboard?activeTab=students";
+    }
+
     @PostMapping("/admin/add-subject")
     public String addSubject(@ModelAttribute Subject subject, HttpSession session) {
         if (session.getAttribute("userType") == null ||
@@ -415,5 +498,10 @@ public class MainController {
 
     private static String normalize(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private static String normalizeOptional(String value) {
+        String normalized = normalize(value);
+        return normalized.isEmpty() ? null : normalized;
     }
 }

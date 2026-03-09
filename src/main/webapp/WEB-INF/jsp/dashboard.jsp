@@ -842,6 +842,19 @@
                                     </form>
                                 </div>
 
+                                <c:if test="${not empty teacherUpdateError}">
+                                    <div
+                                        style="margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c;">
+                                        ${teacherUpdateError}
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty teacherUpdateSuccess}">
+                                    <div
+                                        style="margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4; color: #166534;">
+                                        ${teacherUpdateSuccess}
+                                    </div>
+                                </c:if>
+
                                 <!-- Liste des professeurs -->
                                 <div class="table-container">
                                     <table>
@@ -853,17 +866,41 @@
                                                 <th>Téléphone</th>
                                                 <th>Date d'inscription</th>
                                                 <th>Password</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <c:forEach var="teacher" items="${teachers}">
                                                 <tr>
                                                     <td>${teacher.teacherCode}</td>
-                                                    <td>${teacher.fullName}</td>
-                                                    <td>${teacher.email}</td>
-                                                    <td>${teacher.phone}</td>
+                                                    <td>
+                                                        <input type="text" name="fullName"
+                                                            value="${teacher.fullName}" required
+                                                            form="teacherUpdateForm${teacher.id}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="email" name="email"
+                                                            value="${teacher.email}"
+                                                            form="teacherUpdateForm${teacher.id}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="phone"
+                                                            value="${teacher.phone}"
+                                                            form="teacherUpdateForm${teacher.id}">
+                                                    </td>
                                                     <td><c:out value="${teacher.createdAt}" default="-" /></td>
-                                                    <td>${teacher.password}</td>
+                                                    <td>
+                                                        <input type="text" name="password"
+                                                            value="${teacher.password}" required
+                                                            form="teacherUpdateForm${teacher.id}">
+                                                    </td>
+                                                    <td>
+                                                        <form id="teacherUpdateForm${teacher.id}"
+                                                            action="/admin/update-teacher/${teacher.id}" method="post">
+                                                            <button type="submit" class="btn btn-primary"
+                                                                style="padding: 6px 10px;">Modifier</button>
+                                                        </form>
+                                                    </td>
                                                 </tr>
                                             </c:forEach>
                                         </tbody>
@@ -927,6 +964,19 @@
                                     </form>
                                 </div>
 
+                                <c:if test="${not empty studentUpdateError}">
+                                    <div
+                                        style="margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c;">
+                                        ${studentUpdateError}
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty studentUpdateSuccess}">
+                                    <div
+                                        style="margin-bottom: 18px; padding: 12px 14px; border-radius: 8px; border: 1px solid #bbf7d0; background: #f0fdf4; color: #166534;">
+                                        ${studentUpdateSuccess}
+                                    </div>
+                                </c:if>
+
                                 <!-- Liste des étudiants -->
                                 <div class="table-container">
                                     <table>
@@ -940,19 +990,61 @@
                                                 <th>Date d'inscription</th>
                                                 <th>Année d'Étude</th>
                                                 <th>Option</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <c:forEach var="student" items="${students}">
                                                 <tr>
                                                     <td>${student.studentCode}</td>
-                                                    <td>${student.fullName}</td>
-                                                    <td><c:out value="${student.dateOfBirth}" default="-" /></td>
-                                                    <td>${student.email}</td>
-                                                    <td>${student.phone}</td>
+                                                    <td>
+                                                        <input type="text" name="fullName"
+                                                            value="${student.fullName}" required
+                                                            form="studentUpdateForm${student.id}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="dateOfBirth"
+                                                            value="${student.dateOfBirth}" required
+                                                            form="studentUpdateForm${student.id}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="email" name="email"
+                                                            value="${student.email}"
+                                                            form="studentUpdateForm${student.id}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="phone"
+                                                            value="${student.phone}"
+                                                            form="studentUpdateForm${student.id}">
+                                                    </td>
                                                     <td><c:out value="${student.registrationDate}" default="-" /></td>
-                                                    <td>${student.annee}</td>
-                                                    <td>${student.optionStudent}</td>
+                                                    <td>
+                                                        <select name="annee" required
+                                                            form="studentUpdateForm${student.id}">
+                                                            <option value="L1" ${student.annee eq 'L1' ? 'selected' : ''}>L1</option>
+                                                            <option value="L2" ${student.annee eq 'L2' ? 'selected' : ''}>L2</option>
+                                                            <option value="L3" ${student.annee eq 'L3' ? 'selected' : ''}>L3</option>
+                                                            <option value="L4" ${student.annee eq 'L4' ? 'selected' : ''}>L4</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="optionStudent" required
+                                                            form="studentUpdateForm${student.id}">
+                                                            <option value="Informatique" ${student.optionStudent eq 'Informatique' ? 'selected' : ''}>Informatique</option>
+                                                            <option value="Genie Civil" ${student.optionStudent eq 'Genie Civil' ? 'selected' : ''}>Genie Civil</option>
+                                                            <option value="Electronique" ${student.optionStudent eq 'Electronique' ? 'selected' : ''}>Electronique</option>
+                                                            <option value="Gestion" ${student.optionStudent eq 'Gestion' ? 'selected' : ''}>Gestion</option>
+                                                            <option value="Economie" ${student.optionStudent eq 'Economie' ? 'selected' : ''}>Economie</option>
+                                                            <option value="Administration" ${student.optionStudent eq 'Administration' ? 'selected' : ''}>Administration</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <form id="studentUpdateForm${student.id}"
+                                                            action="/admin/update-student/${student.id}" method="post">
+                                                            <button type="submit" class="btn btn-primary"
+                                                                style="padding: 6px 10px;">Modifier</button>
+                                                        </form>
+                                                    </td>
                                                 </tr>
                                             </c:forEach>
                                         </tbody>
