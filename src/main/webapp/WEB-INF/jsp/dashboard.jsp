@@ -93,6 +93,8 @@
                     overflow-y: auto;
                     backdrop-filter: blur(6px);
                     box-shadow: 8px 0 28px rgba(15, 23, 42, 0.08);
+                    z-index: 25;
+                    transition: transform 0.24s ease, box-shadow 0.24s ease;
                 }
 
                 .sidebar::-webkit-scrollbar {
@@ -588,6 +590,72 @@
                     color: var(--ink-700);
                 }
 
+                .mobile-topbar {
+                    display: none;
+                }
+
+                .mobile-topbar-copy {
+                    min-width: 0;
+                }
+
+                .mobile-topbar-title {
+                    display: block;
+                    font-family: 'Space Grotesk', sans-serif;
+                    font-size: 0.98rem;
+                    color: var(--ink-900);
+                }
+
+                .mobile-topbar-subtitle {
+                    display: block;
+                    margin-top: 2px;
+                    font-size: 0.76rem;
+                    color: var(--ink-500);
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                }
+
+                .mobile-menu-btn,
+                .sidebar-close-btn {
+                    display: none;
+                    padding: 0;
+                    border: 1px solid rgba(14, 116, 144, 0.18);
+                    border-radius: 12px;
+                    background: #fff;
+                    color: var(--primary-strong);
+                    cursor: pointer;
+                }
+
+                .sidebar-close-btn {
+                    position: absolute;
+                    top: 18px;
+                    right: 18px;
+                }
+
+                .sidebar-overlay {
+                    display: none;
+                    padding: 0;
+                    background: transparent;
+                    border: 0;
+                }
+
+                .responsive-form-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                }
+
+                .responsive-filter-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                    gap: 15px;
+                }
+
+                .inline-grade-form {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
                 .text-uppercase {
                     text-transform: uppercase;
                 }
@@ -728,15 +796,241 @@
                     }
                 }
 
+                @media (max-width: 720px) {
+                    body.sidebar-open {
+                        overflow: hidden;
+                    }
+
+                    .dashboard {
+                        display: block;
+                    }
+
+                    .sidebar {
+                        width: min(300px, 84vw);
+                        height: 100dvh;
+                        transform: translateX(-100%);
+                        box-shadow: none;
+                    }
+
+                    .sidebar.is-open {
+                        transform: translateX(0);
+                        box-shadow: 12px 0 34px rgba(15, 23, 42, 0.18);
+                    }
+
+                    .sidebar-overlay {
+                        display: block;
+                        position: fixed;
+                        inset: 0;
+                        border: 0;
+                        background: rgba(15, 23, 42, 0.42);
+                        opacity: 0;
+                        visibility: hidden;
+                        transition: opacity 0.22s ease, visibility 0.22s ease;
+                        z-index: 24;
+                    }
+
+                    .sidebar-overlay.is-visible {
+                        opacity: 1;
+                        visibility: visible;
+                    }
+
+                    .main-content {
+                        margin-left: 0;
+                        padding: 88px 14px 24px;
+                    }
+
+                    .mobile-topbar {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        position: sticky;
+                        top: 10px;
+                        z-index: 15;
+                        margin-bottom: 18px;
+                        padding: 12px 14px;
+                        border: 1px solid rgba(215, 226, 236, 0.9);
+                        border-radius: 16px;
+                        background: rgba(255, 255, 255, 0.92);
+                        backdrop-filter: blur(10px);
+                        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+                    }
+
+                    .mobile-menu-btn,
+                    .sidebar-close-btn {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 42px;
+                        height: 42px;
+                    }
+
+                    .mobile-menu-btn:hover,
+                    .sidebar-close-btn:hover {
+                        background: rgba(14, 116, 144, 0.08);
+                    }
+
+                    .mobile-menu-btn:focus-visible,
+                    .sidebar-close-btn:focus-visible {
+                        outline: none;
+                        box-shadow: 0 0 0 3px var(--ring);
+                    }
+
+                    .logo {
+                        position: relative;
+                        padding: 24px 20px 18px;
+                        text-align: left;
+                    }
+
+                    .logo h1 {
+                        display: block;
+                        font-size: 1.05rem;
+                    }
+
+                    .logo p {
+                        display: block;
+                    }
+
+                    .user-info {
+                        margin: 12px 14px 0;
+                        padding: 16px 14px;
+                    }
+
+                    .user-avatar {
+                        margin: 0 auto 12px;
+                    }
+
+                    .user-name,
+                    .user-type,
+                    .nav-item span {
+                        display: block;
+                    }
+
+                    .nav-menu {
+                        padding: 16px 14px;
+                    }
+
+                    .nav-item {
+                        justify-content: flex-start;
+                        padding: 12px 14px;
+                    }
+
+                    .logout-btn {
+                        width: calc(100% - 28px);
+                        margin: 8px 14px 24px;
+                    }
+
+                    .section-title {
+                        font-size: 1.16rem;
+                        margin-bottom: 18px;
+                    }
+
+                    .section-title::after {
+                        width: 68px;
+                    }
+
+                    .responsive-panel form>.btn {
+                        width: 100%;
+                    }
+
+                    .responsive-panel .table-container {
+                        overflow: visible;
+                        border: none;
+                        background: transparent;
+                    }
+
+                    .responsive-panel .table-container table,
+                    .responsive-panel .table-container thead,
+                    .responsive-panel .table-container tbody,
+                    .responsive-panel .table-container tr,
+                    .responsive-panel .table-container th,
+                    .responsive-panel .table-container td {
+                        display: block;
+                        width: 100%;
+                    }
+
+                    .responsive-panel .table-container thead {
+                        display: none;
+                    }
+
+                    .responsive-panel .table-container tbody {
+                        display: grid;
+                        gap: 14px;
+                    }
+
+                    .responsive-panel .table-container tr {
+                        border: 1px solid var(--border);
+                        border-radius: 14px;
+                        overflow: hidden;
+                        background: #fff;
+                        box-shadow: var(--shadow-card);
+                    }
+
+                    .responsive-panel .table-container tr:hover {
+                        background: #fff;
+                    }
+
+                    .responsive-panel .table-container td {
+                        border-bottom: 1px solid rgba(215, 226, 236, 0.85);
+                        padding: 12px 14px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        word-break: break-word;
+                    }
+
+                    .responsive-panel .table-container td:last-child {
+                        border-bottom: none;
+                    }
+
+                    .responsive-panel .table-container td::before {
+                        content: attr(data-label);
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 0.05em;
+                        text-transform: uppercase;
+                        color: var(--ink-500);
+                    }
+
+                    .responsive-panel .table-container td[colspan] {
+                        text-align: left !important;
+                    }
+
+                    .responsive-panel .table-container td[colspan]::before {
+                        content: none;
+                    }
+
+                    .responsive-panel .table-container input[type="text"],
+                    .responsive-panel .table-container input[type="email"],
+                    .responsive-panel .table-container input[type="date"],
+                    .responsive-panel .table-container input[type="number"],
+                    .responsive-panel .table-container input[type="password"],
+                    .responsive-panel .table-container select {
+                        min-width: 0;
+                    }
+
+                    .inline-grade-form {
+                        flex-direction: column;
+                        align-items: stretch !important;
+                    }
+
+                    .inline-grade-form input[type="number"] {
+                        width: 100% !important;
+                    }
+                }
+
                 @media (max-width: 640px) {
                     .main-content {
-                        margin-left: 80px;
-                        padding: 16px 12px 24px;
+                        padding: 84px 12px 24px;
                     }
 
                     .content-section {
                         padding: 16px;
                         border-radius: 14px;
+                    }
+
+                    .mobile-topbar {
+                        top: 8px;
+                        padding: 11px 12px;
                     }
 
                     .stats-grid {
@@ -761,8 +1055,11 @@
         <body>
             <div class="dashboard">
                 <!-- Sidebar -->
-                <div class="sidebar">
+                <div class="sidebar" id="sidebarNav">
                     <div class="logo">
+                        <button type="button" class="sidebar-close-btn" aria-label="Fermer le menu">
+                            <i class="fas fa-times"></i>
+                        </button>
                         <h1>School System</h1>
                         <p>Management Portal</p>
                     </div>
@@ -829,9 +1126,21 @@
 
                     <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i>Déconnexion</a>
                 </div>
+                <button type="button" class="sidebar-overlay" aria-label="Fermer le menu"></button>
 
                 <!-- Main Content -->
                 <div class="main-content">
+                    <div class="mobile-topbar">
+                        <button type="button" class="mobile-menu-btn" aria-label="Ouvrir le menu"
+                            aria-controls="sidebarNav" aria-expanded="false">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="mobile-topbar-copy">
+                            <span class="mobile-topbar-title">School System</span>
+                            <span class="mobile-topbar-subtitle">${user.fullName} • ${userType}</span>
+                        </div>
+                    </div>
+
                     <!-- Tableau de bord -->
                     <div id="dashboard" class="tab-content active">
                         <div class="content-section">
@@ -886,7 +1195,7 @@
 
                     <!-- Section Admin: Gestion des professeurs -->
                     <c:if test="${userType == 'ADMIN'}">
-                        <div id="teachers" class="tab-content">
+                        <div id="teachers" class="tab-content responsive-panel admin-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Professeurs</h2>
 
@@ -894,8 +1203,7 @@
                                 <div style="margin-bottom: 30px;">
                                     <h3 style="margin-bottom: 15px; color: #4a5568;">Ajouter un professeur</h3>
                                     <form action="/admin/add-teacher" method="post">
-                                        <div
-                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                        <div class="responsive-form-grid">
                                             <div class="form-group">
                                                 <label for="teacherFullName">Nom complet</label>
                                                 <input type="text" id="teacherFullName" name="fullName" required>
@@ -986,7 +1294,7 @@
                         </div>
 
                         <!-- Section Admin: Gestion des étudiants -->
-                        <div id="students" class="tab-content">
+                        <div id="students" class="tab-content responsive-panel admin-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Étudiants</h2>
 
@@ -994,8 +1302,7 @@
                                 <div style="margin-bottom: 30px;">
                                     <h3 style="margin-bottom: 15px; color: #4a5568;">Ajouter un étudiant</h3>
                                     <form action="/admin/add-student" method="post">
-                                        <div
-                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                        <div class="responsive-form-grid">
                                             <div class="form-group">
                                                 <label for="studentFullName">Nom complet</label>
                                                 <input type="text" id="studentFullName" name="fullName" required>
@@ -1130,7 +1437,7 @@
                         </div>
 
                         <!-- Section Admin: Gestion des matières -->
-                        <div id="subjects" class="tab-content">
+                        <div id="subjects" class="tab-content responsive-panel admin-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Matières</h2>
 
@@ -1138,8 +1445,7 @@
                                 <div style="margin-bottom: 30px;">
                                     <h3 style="margin-bottom: 15px; color: #4a5568;">Créer une affectation de cours</h3>
                                     <form action="/admin/add-subject" method="post">
-                                        <div
-                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                        <div class="responsive-form-grid">
                                             <div class="form-group">
                                                 <label for="subjectName">Nom de la matière</label>
                                                 <input type="text" id="subjectName" name="subjectName" required>
@@ -1219,13 +1525,12 @@
                         </div>
 
                         <!-- Section Admin: Gestion des notes -->
-                        <div id="grades-admin" class="tab-content">
+                        <div id="grades-admin" class="tab-content responsive-panel admin-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Notes</h2>
                                 <h3 style="margin-bottom: 15px; color: #4a5568;">Rechercher les notes d'un etudiant</h3>
                                 <form action="/admin/get-grade-student" method="get">
-                                    <div
-                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                    <div class="responsive-form-grid">
                                         <div class="form-group">
                                             <label for="subjectName">Code etudiant</label>
                                             <input type="text" id="studentCode" name="studentCode"
@@ -1290,8 +1595,7 @@
                                                                 <c:choose>
                                                                     <c:when test="${grade.grade < 55}">
                                                                         <form action="/admin/update-grade/${grade.id}"
-                                                                            method="post"
-                                                                            style="display: flex; align-items: center; gap: 8px;">
+                                                                            method="post" class="inline-grade-form">
                                                                             <input type="hidden" name="studentCode"
                                                                                 value="${selectedStudent.studentCode}">
                                                                             <input type="number" name="newGrade"
@@ -1455,7 +1759,7 @@
                         </div>
 
                         <!-- Section Admin: Cours -->
-                        <div id="courses" class="tab-content">
+                        <div id="courses" class="tab-content responsive-panel admin-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Cours</h2>
                                 <div class="table-container">
@@ -1501,7 +1805,7 @@
 
                     <!-- Section Professeur: Gestion des notes -->
                     <c:if test="${userType == 'TEACHER'}">
-                        <div id="grades-teacher" class="tab-content">
+                        <div id="grades-teacher" class="tab-content responsive-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Gestion des Notes</h2>
 
@@ -1517,8 +1821,7 @@
                                         <h3 style="margin-bottom: 15px; color: #4a5568;">Filtrer par affectation</h3>
                                         <form action="/dashboard" method="get">
                                             <input type="hidden" name="activeTab" value="grades-teacher">
-                                            <div
-                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                                            <div class="responsive-filter-grid">
                                                 <div class="form-group">
                                                     <label for="gradeOptionFilter">Option</label>
                                                     <select id="gradeOptionFilter" name="optionFilter" required>
@@ -1567,8 +1870,7 @@
                                         <form action="/teacher/add-grade" method="post">
                                             <input type="hidden" name="optionFilter" value="${selectedOption}">
                                             <input type="hidden" name="yearFilter" value="${selectedStudyYear}">
-                                            <div
-                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                            <div class="responsive-form-grid">
                                                 <div class="form-group">
                                                     <label for="gradeStudent">Étudiant</label>
                                                     <select id="gradeStudent" name="studentId" required>
@@ -1614,7 +1916,7 @@
                         </div>
                     </c:if>
                     <c:if test="${userType == 'TEACHER'}">
-                        <div id="my-students" class="tab-content">
+                        <div id="my-students" class="tab-content responsive-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Mes Étudiants</h2>
 
@@ -1622,8 +1924,7 @@
                                     <div style="margin-bottom: 20px;">
                                         <form action="/dashboard" method="get">
                                             <input type="hidden" name="activeTab" value="my-students">
-                                            <div
-                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                                            <div class="responsive-filter-grid">
                                                 <div class="form-group">
                                                     <label for="studentOptionFilter">Option</label>
                                                     <select id="studentOptionFilter" name="optionFilter" required>
@@ -1696,7 +1997,7 @@
 
                     <!-- Section Étudiant: Mes notes -->
                     <c:if test="${userType == 'STUDENT'}">
-                        <div id="my-grades" class="tab-content">
+                        <div id="my-grades" class="tab-content responsive-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Mes Notes</h2>
 
@@ -1740,7 +2041,7 @@
                         </div>
 
                         <!-- Section Étudiant: Mon bulletin -->
-                        <div id="bulletin" class="tab-content">
+                        <div id="bulletin" class="tab-content responsive-panel">
                             <div class="content-section">
                                 <h2 class="section-title">Mon Bulletin</h2>
 
@@ -1879,6 +2180,10 @@
                     const tabContents = document.querySelectorAll('.tab-content');
                     const activeTabFromServer = '<c:out value="${activeTab}" default="" />';
                     const tabStorageKey = 'ssm-active-tab';
+                    const sidebar = document.getElementById('sidebarNav');
+                    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+                    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+                    const sidebarCloseBtn = document.querySelector('.sidebar-close-btn');
 
                     function getStoredTab() {
                         try {
@@ -1934,10 +2239,81 @@
                         }
                     }
 
+                    function isMobileViewport() {
+                        return window.matchMedia('(max-width: 720px)').matches;
+                    }
+
+                    function setSidebarState(isOpen) {
+                        if (!sidebar || !sidebarOverlay || !mobileMenuBtn) {
+                            return;
+                        }
+
+                        sidebar.classList.toggle('is-open', isOpen);
+                        sidebarOverlay.classList.toggle('is-visible', isOpen);
+                        document.body.classList.toggle('sidebar-open', isOpen);
+                        mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+                    }
+
+                    function closeSidebar() {
+                        setSidebarState(false);
+                    }
+
+                    function enhanceResponsiveTables() {
+                        document.querySelectorAll('.responsive-panel table').forEach(table => {
+                            const headers = Array.from(table.querySelectorAll('thead th'))
+                                .map(header => header.textContent.trim());
+
+                            table.querySelectorAll('tbody tr').forEach(row => {
+                                Array.from(row.children).forEach((cell, index) => {
+                                    if (cell.tagName !== 'TD' || cell.hasAttribute('colspan')) {
+                                        return;
+                                    }
+
+                                    cell.setAttribute('data-label', headers[index] || '');
+                                });
+                            });
+                        });
+                    }
+
+                    enhanceResponsiveTables();
+
+                    if (mobileMenuBtn) {
+                        mobileMenuBtn.addEventListener('click', function () {
+                            if (!isMobileViewport()) {
+                                return;
+                            }
+
+                            setSidebarState(!sidebar.classList.contains('is-open'));
+                        });
+                    }
+
+                    if (sidebarOverlay) {
+                        sidebarOverlay.addEventListener('click', closeSidebar);
+                    }
+
+                    if (sidebarCloseBtn) {
+                        sidebarCloseBtn.addEventListener('click', closeSidebar);
+                    }
+
+                    window.addEventListener('resize', function () {
+                        if (!isMobileViewport()) {
+                            closeSidebar();
+                        }
+                    });
+
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            closeSidebar();
+                        }
+                    });
+
                     navItems.forEach(item => {
                         item.addEventListener('click', function (e) {
                             e.preventDefault();
                             activateTab(this.getAttribute('data-tab'), { updateHash: true });
+                            if (isMobileViewport()) {
+                                closeSidebar();
+                            }
                         });
                     });
 
